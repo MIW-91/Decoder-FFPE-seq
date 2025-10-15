@@ -165,21 +165,20 @@ calc_integral <- function(x, y) {
     stop("x must be strictly increasing.")
   }
   
-  # 计算相邻点之间的差异（dx）
+ 
   diff_x <- diff(x)
-  # 计算相邻y值的平均值（高度）
   avg_y <- (y[-1] + y[-length(y)]) / 2
-  # 计算每个梯形的面积并求和
+
   integral <- sum(diff_x * avg_y)
   return(integral)
 }
 
 ###4. calculate diffusion distance
 calculate_hwhm <- function(distances, values) {
-  # 输入检查
+
   if (length(distances) != length(values)) stop("x和y的长度必须相同")
   
-  # 找到峰值位置和半高值
+
   # max_y <- max(values)
   # half_max <- max_y / 2
   
@@ -219,7 +218,7 @@ calculate_hwhm <- function(distances, values) {
   HWHM_left = peak_x - left
   HWHM_right = right - peak_x
   
-  # 返回左右HWHM
+
   return(c(
     HWHM_left = HWHM_left, 
     HWHM_right = HWHM_right,
@@ -228,34 +227,6 @@ calculate_hwhm <- function(distances, values) {
   ))
 }
 
-#4.1
-calculate_fwhm <- function(distances, values) {
-  # Compute the maximum and half-maximum.
-  max_y <- max(values)
-  # half_max <- max_y / 2
-  plot(distances,values)
-  # Linear interpolation of your data.
-  interpolation <- approx(distances, values,n = 200)
-  plot(interpolation$x,interpolation$y)
-  half_max <- max(interpolation$y) / 2
-  # Find the two x values (distances) at which y equals the half maximum.
-  # Note that we have to check if the values cross the half_max from below and from above
-  cross_below <- which(interpolation$y[-length(interpolation$y)] < half_max & interpolation$y[-1] >= half_max)
-  cross_above <- which(interpolation$y[-length(interpolation$y)] > half_max & interpolation$y[-1] <= half_max)
-  cross <- sort(c(cross_below, cross_above))
-  
-  points(interpolation$x[which.max(interpolation$y)], interpolation$y[which.max(interpolation$y)], col = "black", pch = 19, cex = 1.5)
-  
-  if(length(cross) < 2){
-    stop("Couldn't find two crossing points. Check your data or increase the number of points in interpolation.")
-  }
-  
-  points(interpolation$x[cross_below], interpolation$y[cross_below], col = "red", pch = 19, cex = 1.5)
-  # The FWHM is the difference between the second and the first crossing points.
-  #interpolation$x[cross[cross>=which.max(interpolation$y)]][1] -> maxv
-  #maxv[maxv<220] ->  maxv
-  interpolation$x[cross[cross<=which.max(interpolation$y)]][1] -> minv
-  fwhm <-  interpolation$x[which.max(interpolation$y)]-minv
-  return(fwhm)
-}
+
+
 
