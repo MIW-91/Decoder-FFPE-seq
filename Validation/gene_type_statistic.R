@@ -1,10 +1,10 @@
 library(rtracklayer);library(dplyr);library(Seuart)
 
-# gtf <- import('/home/disk/miw/GRCm38_bundle/refdata-gex-mm10-2020-A/genes/genes.gtf', format="gtf")
-gtf.ori <- import('E:\\decoderFFPE\\Mus_musculus.GRCm38.102.gtf', format="gtf")
+gtf.ori <- import('Mus_musculus.GRCm38.102.gtf', format="gtf")
 gtf.ori<-as.data.frame(gtf.ori)
-data<-Load10X_Spatial('E:/decoderFFPE/seqData/RJ-GL-241221-3')
-
+data<-Load10X_Spatial('my_data')
+mtx=GetAssayData(data,assay = 'Spatial',layer = 'counts')
+data=CreateSeuratObject(mtx,min.cells=1)
 
 # dim(gtf)
 # unique(gtf$gene_type)
@@ -23,7 +23,7 @@ gtf$gene_name<-ifelse(is.na(gtf$gene_name),gtf$gene_id,gtf$gene_name)
 gtf<-gtf[!duplicated(gtf$gene_id),]
 
 
-gene_df<-data.frame(gene_name=rownames(tdata))
+gene_df<-data.frame(gene_name=rownames(data))
 
 gene_df<-left_join(gene_df,gtf,by='gene_name')
 
@@ -54,3 +54,4 @@ ggplot(stat.d,aes(x=2,y=proportion,fill=gene_type))+
   theme_void()+
   theme(legend.position='right')+
   xlim(0.5, 2.5)
+
